@@ -1,4 +1,5 @@
 ﻿using Diahon.VersionControl.Subversion.Primitives;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,8 +14,7 @@ public unsafe readonly ref struct SvnReader(Stream stream)
     public SvnList ReadList()
     {
         int nestingLevel = 1;
-        if (_tokenizer.Read().Kind != SvnObjectKind.ListStart)
-            throw new InvalidDataException("Expected list start");
+        _tokenizer.Read().AssertKind(SvnObjectKind.ListStart);
 
         while (nestingLevel > 0)
         {
@@ -95,6 +95,9 @@ public unsafe readonly ref struct SvnReader(Stream stream)
     internal SvnObject ReadToken()
         => _tokenizer.Read();
 
+    internal void ReadStringBuffer(ArrayBufferWriter<byte> bufferWriter, out int writtenBytes)
+        => _tokenizer.ReadStringBuffer(bufferWriter, out writtenBytes);
+
     readonly ref struct SvnTokenizer(SvnStreamReader reader)
     {
         readonly StringBuilder _stringBuilder = new();
@@ -151,7 +154,7 @@ public unsafe readonly ref struct SvnReader(Stream stream)
                     break;
 
                 if (!char.IsAsciiLetterOrDigit(currentChar) && currentChar != '-')
-                    throw new InvalidDataException($"Unexpected char '{currentChar}'");
+                    throw SvnFormatException.UnexpectedToken(currentChar);
 
                 _stringBuilder.Append(currentChar);
             }
@@ -177,7 +180,7 @@ public unsafe readonly ref struct SvnReader(Stream stream)
                 }
 
                 if (!char.IsAsciiDigit(currentChar))
-                    throw new InvalidDataException($"Unexpected char '{currentChar}'");
+                    throw SvnFormatException.UnexpectedToken(currentChar, "digit");
 
                 _stringBuilder.Append(currentChar);
             }
@@ -194,11 +197,29 @@ public unsafe readonly ref struct SvnReader(Stream stream)
             return Encoding.GetString(buffer);
         }
 
+        public void ReadStringBuffer(ArrayBufferWriter<byte> bufferWriter, out int writtenBytes)
+        {
+            var currentChar = _reader.ReadChar();
+            if (!char.IsAsciiDigit(currentChar))
+                throw SvnFormatException.UnexpectedToken(currentChar, "digit");
+
+            var bufferSize = ReadRemainingNumber(currentChar, out bool isStringPrefix);
+            if (!isStringPrefix)
+                throw SvnFormatException.ExpectedToken("string");
+
+            writtenBytes = (int)bufferSize.Value;
+            var buffer = bufferWriter.GetSpan(writtenBytes)[..writtenBytes];
+            _reader.Read(buffer);
+            bufferWriter.Advance(writtenBytes);
+
+            ExpectSeparator();
+        }
+
         private void ExpectSeparator()
         {
             var actual = _reader.ReadChar();
             if (!SvnTokens.IsTokenSeparator(actual))
-                throw new InvalidDataException($"Expected white space");
+                throw SvnFormatException.UnexpectedToken(actual, "white-space");
         }
     }
 

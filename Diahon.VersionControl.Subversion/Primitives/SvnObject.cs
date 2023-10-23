@@ -1,4 +1,6 @@
-﻿namespace Diahon.VersionControl.Subversion.Primitives;
+﻿using Diahon.VersionControl.Subversion.Serialization;
+
+namespace Diahon.VersionControl.Subversion.Primitives;
 
 public readonly struct SvnObject : ISvnPrimitive<SvnObject>
 {
@@ -29,7 +31,7 @@ public readonly struct SvnObject : ISvnPrimitive<SvnObject>
     internal void AssertKind(SvnObjectKind expected)
     {
         if (Kind != expected)
-            throw new InvalidOperationException($"Expected token {expected}");
+            throw SvnFormatException.ExpectedToken(expected);
     }
 
     static SvnObject ISvnPrimitive<SvnObject>.Parse(SvnObject obj)

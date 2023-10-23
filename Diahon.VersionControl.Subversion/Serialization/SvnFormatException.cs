@@ -12,4 +12,7 @@ public sealed class SvnFormatException : Exception
 
     public static Exception UnexpectedToken(object actual, object expected)
         => new SvnFormatException($"Unexpected token {actual}, expected {expected}");
+
+    public static Exception ExpectedToken(object expected)
+        => new SvnFormatException($"Expected token {expected}");
 }

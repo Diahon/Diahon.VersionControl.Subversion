@@ -27,7 +27,7 @@ public sealed class SvnClientTests(ITestOutputHelper output)
     {
         using var client = await SvnClient.ConnectAsync(Env.RepoUrl, Env.Credentials);
 
-        var result = client.GetFile("REP_update.cmd");
+        var result = client.GetFileString("REP_update.cmd");
         output.WriteLine(result);
 
         Assert.True(result.Length > 0);
@@ -41,7 +41,7 @@ public sealed class SvnClientTests(ITestOutputHelper output)
         for (int i = 0; i < 2; i++)
         {
             var listResult = client.List(path: null, "*.bat");
-            var content = client.GetFile(listResult[0].RelativePath.Value);
+            var content = client.GetFileString(listResult[0].RelativePath.Value);
             output.WriteLine(content);
 
             Assert.True(content.Length > 0);
@@ -54,5 +54,17 @@ public sealed class SvnClientTests(ITestOutputHelper output)
         using var client = await SvnClient.ConnectAsync(Env.RepoUrl, Env.Credentials);
 
         Assert.Throws<SvnError>(() => client.GetFile("does_not_exist.txt"));
+    }
+
+    [Fact]
+    public async Task GetFile_ShouldDownloadValidBinaryFile()
+    {
+        using var client = await SvnClient.ConnectAsync(Env.RepoUrl, Env.Credentials);
+
+        var files = client.List(path: null, "*.pdf");
+        var data = client.GetFile(files[0].RelativePath.Value);
+
+        using var stream = File.Create("test.pdf");
+        stream.Write(data.Span);
     }
 }

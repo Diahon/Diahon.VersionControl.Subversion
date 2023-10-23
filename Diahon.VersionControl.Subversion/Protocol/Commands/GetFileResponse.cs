@@ -1,8 +1,8 @@
 ﻿using Diahon.VersionControl.Subversion.Primitives;
 using Diahon.VersionControl.Subversion.Serialization;
-using System.Text;
+using System.Buffers;
 
-namespace Diahon.VersionControl.Subversion.Protocol;
+namespace Diahon.VersionControl.Subversion.Protocol.Commands;
 
 // response: ( [ checksum:string ] rev:number props:proplist [ inherited-props:iproplist ] )
 public sealed class GetFileResponse : ISvnServerPrototype<GetFileResponse>
@@ -29,21 +29,18 @@ public sealed class GetFileResponse : ISvnServerPrototype<GetFileResponse>
         };
     }
 
-    public static string ReadFileContents(ref SvnReader reader)
+    public static ReadOnlyMemory<byte> ReadFileContents(ref SvnReader reader)
     {
-        StringBuilder builder = new();
+        ArrayBufferWriter<byte> bufferWriter = new();
 
-        SvnString str;
+        int writtenBytes;
         do
         {
-            if (!reader.TryReadPrimitiveOrEnd(out str))
-                throw SvnFormatException.UnexpectedEndOfList();
-
-            builder.Append(str.Value);
-        } while (str.Value.Length > 0);
+            reader.ReadStringBuffer(bufferWriter, out writtenBytes);
+        } while (writtenBytes > 0);
 
         reader.Read<CommandResponse<EmptyResponse>>();
 
-        return builder.ToString();
+        return bufferWriter.WrittenMemory;
     }
 }

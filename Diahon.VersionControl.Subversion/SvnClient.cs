@@ -4,6 +4,7 @@ using Diahon.VersionControl.Subversion.Protocol.Commands;
 using Diahon.VersionControl.Subversion.Serialization;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Diahon.VersionControl.Subversion;
 
@@ -104,7 +105,7 @@ public sealed class SvnClient : IDisposable
         return result;
     }
 
-    public string GetFile(string path)
+    public ReadOnlyMemory<byte> GetFile(string path)
     {
         InitializeIO(_client, out var writer, out var reader);
 
@@ -119,6 +120,14 @@ public sealed class SvnClient : IDisposable
 
         reader.Read<CommandResponse<GetFileResponse>>();
         return GetFileResponse.ReadFileContents(ref reader);
+    }
+
+    public string GetFileString(string path, Encoding? encoding = null)
+    {
+        encoding ??= Encoding.UTF8;
+
+        var buffer = GetFile(path);
+        return encoding.GetString(buffer.Span);
     }
 
     public void Dispose()
