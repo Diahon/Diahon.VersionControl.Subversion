@@ -16,7 +16,7 @@
 		<Company>Diahon</Company>
 		<RepositoryUrl>https://github.com/Diahon/Diahon.VersionControl.Subversion</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	</PropertyGroup>
 
 	<ItemGroup Label="Nuget">
