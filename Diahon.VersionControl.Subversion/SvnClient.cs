@@ -10,7 +10,7 @@ namespace Diahon.VersionControl.Subversion;
 
 public sealed class SvnClient : IDisposable
 {
-    const int SvnPort = 3690;
+    internal const int SvnPort = 3690;
 
     readonly TcpClient _client;
     public Uri Uri { get; }
