@@ -42,7 +42,7 @@ public sealed class SvnClient : IDisposable
             writer.Write<GreetingResponse>(new()
             {
                 Version = 2,
-                Capabilities = new List<SvnWord>() { new("edit-pipeline"), new("svndiff1"), new("accepts-svndiff2"), new("absent-entries"), new("depth"), new("mergeinfo"), new("log-revprops") },
+                Capabilities = [new("edit-pipeline"), new("svndiff1"), new("accepts-svndiff2"), new("absent-entries"), new("depth"), new("mergeinfo"), new("log-revprops")],
                 Url = connectionUri.OriginalString
             });
 
@@ -87,13 +87,13 @@ public sealed class SvnClient : IDisposable
         {
             Path = path ?? "",
             Depth = ListCommand.DepthInfinity,
-            Fields = new List<SvnWord> { ListCommand.FieldKind },
+            Fields = [ListCommand.FieldKind],
             Patterns = patterns
         });
 
         HandleAuth(ref writer, ref reader);
 
-        List<Dirent> result = new();
+        List<Dirent> result = [];
         while (!reader.TryReadDone())
         {
             result.Add(Dirent.ReadContent(ref reader));

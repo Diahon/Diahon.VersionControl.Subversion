@@ -33,7 +33,7 @@ public sealed class AuthChallengeResponse : ISvnClientPrototype<AuthChallengeRes
         for (int i = 0; i < secret.Length; i++)
             secret[i] ^= 0x36;
 
-        var hash = IncrementalHash.CreateHash(HashAlgorithmName.MD5);
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.MD5);
         hash.AppendData(secret);
         hash.AppendData(encoding.GetBytes(Challenge)); // ToDo: Less allocations / ArrayBuffer
         var hashSize = hash.GetHashAndReset(digest);
