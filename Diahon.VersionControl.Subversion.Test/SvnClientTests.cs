@@ -1,5 +1,4 @@
 ﻿using Diahon.VersionControl.Subversion.Protocol;
-using Xunit.Abstractions;
 
 namespace Diahon.VersionControl.Subversion.Test;
 
