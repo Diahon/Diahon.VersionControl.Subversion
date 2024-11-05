@@ -26,10 +26,11 @@ jobs:
         with:
           dotnet-version: "8.x.x"
 
-      - name: Install dependencies
-        run: |
-            dotnet restore Diahon.VersionControl.Subversion
+      - name: Restore
+        run: dotnet restore
 
-      - name: Build and Analyse
-        run: |
-            dotnet build Diahon.VersionControl.Subversion -c Release --no-restore
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        run: dotnet test -c Release --no-build
