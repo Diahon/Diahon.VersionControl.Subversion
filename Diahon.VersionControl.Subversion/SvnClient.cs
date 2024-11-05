@@ -1,5 +1,4 @@
-﻿using Diahon.VersionControl.Subversion.Primitives;
-using Diahon.VersionControl.Subversion.Protocol;
+﻿using Diahon.VersionControl.Subversion.Protocol;
 using Diahon.VersionControl.Subversion.Protocol.Commands;
 using Diahon.VersionControl.Subversion.Serialization;
 using System.Net;
@@ -67,6 +66,7 @@ public sealed class SvnClient : IDisposable
             Mech = new("CRAM-MD5")
         });
         var challenge = reader.Read<AuthChallenge>();
+        AssertStatus(challenge, "step");
 
         new AuthChallengeResponse()
         {
@@ -75,8 +75,15 @@ public sealed class SvnClient : IDisposable
         }.WriteContent(ref writer);
 
         challenge = reader.Read<AuthChallenge>();
-        if (challenge.AuthStatus.Value != "success")
+        AssertStatus(challenge, "success");
+
+        static void AssertStatus(AuthChallenge challenge, string expectedStatus)
+        {
+            if (challenge.AuthStatus.Value == expectedStatus)
+                return;
+
             throw new ArgumentException(challenge.TokenOrMessage?.Value ?? "Invalid credentials", nameof(credential));
+        }
     }
 
     public IReadOnlyList<Dirent> List(string? path = null, params string[]? patterns)
