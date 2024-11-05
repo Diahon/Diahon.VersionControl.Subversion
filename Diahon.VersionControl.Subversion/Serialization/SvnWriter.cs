@@ -30,13 +30,13 @@ public unsafe readonly ref struct SvnWriter(Stream stream)
 
     public void WriteListStart()
     {
-        Span<byte> data = stackalloc[] { SvnTokens.ListStart, SvnTokens.TokenSpaceSeparator };
+        Span<byte> data = [SvnTokens.ListStart, SvnTokens.TokenSpaceSeparator];
         _stream.Write(data);
     }
 
     public void WriteListEnd()
     {
-        Span<byte> data = stackalloc[] { SvnTokens.ListEnd, SvnTokens.TokenSpaceSeparator };
+        Span<byte> data = [SvnTokens.ListEnd, SvnTokens.TokenSpaceSeparator];
         _stream.Write(data);
     }
 

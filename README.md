@@ -4,7 +4,7 @@ This is a minimal cross-platform subversion client fully written in c# implement
 Have a look at our [Roadmap](Roadmap.md)!
 
 ## Building
- - Download the [`net7.0` sdk](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+ - Download the [`net8.0` sdk](https://dotnet.microsoft.com/en-us/download/dotnet/)
  - Run `dotnet build`
 
 ## Contribute

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
+# 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diahon.VersionControl.Subversion", "Diahon.VersionControl.Subversion\Diahon.VersionControl.Subversion.csproj", "{6B17AA31-7B99-47E9-B898-86770272CB86}"
@@ -10,6 +10,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{251FA7D3-7CF3-4BE3-948B-790C998ECF35}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diahon.VersionControl.Subversion.Test", "Diahon.VersionControl.Subversion.Test\Diahon.VersionControl.Subversion.Test.csproj", "{02432F24-74A6-4BBF-AAF0-786913252D2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{C6052DFA-432F-4EE4-9C84-A9F201776C4B}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
