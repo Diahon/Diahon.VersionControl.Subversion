@@ -6,11 +6,31 @@
 		<Nullable>enable</Nullable>
 		<LangVersion>preview</LangVersion>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>0.1.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="Diahon.VersionControl.Subversion.Test" />
+	</ItemGroup>
+
+	<PropertyGroup Label="Nuget">
+		<Version>0.1.0-alpha</Version>
+		<PackageDescription>Minimal cross-platform subversion client for dotnet</PackageDescription>
+		<Authors>ShortDevelopment</Authors>
+		<Company>Diahon</Company>
+		<RepositoryUrl>https://github.com/Diahon/Diahon.VersionControl.Subversion</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
+
+	<ItemGroup Label="Nuget">
+		<Content Include="../README.md">
+			<PackagePath>/</PackagePath>
+			<Pack>true</Pack>
+		</Content>
+		<Content Include="../LICENSE.txt">
+			<PackagePath>/</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 
 </Project>
