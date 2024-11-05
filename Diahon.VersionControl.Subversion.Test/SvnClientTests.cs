@@ -15,10 +15,10 @@ public sealed class SvnClientTests(ITestOutputHelper output)
     {
         using var client = await SvnClient.ConnectAsync(Env.RepoUrl, Env.Credentials);
 
-        var result = client.List(path: null, "*.bat");
+        var result = client.List(path: null, "*.txt");
 
         Assert.True(result.Count > 0);
-        Assert.Equal(".bat", Path.GetExtension(result[0].RelativePath.Value));
+        Assert.Equal(".txt", Path.GetExtension(result[0].RelativePath.Value));
     }
 
     [Fact]
@@ -26,10 +26,10 @@ public sealed class SvnClientTests(ITestOutputHelper output)
     {
         using var client = await SvnClient.ConnectAsync(Env.RepoUrl, Env.Credentials);
 
-        var result = client.GetFileString("REP_update.cmd");
+        var result = client.GetFileString("file.txt");
         output.WriteLine(result);
 
-        Assert.True(result.Length > 0);
+        Assert.Equal("Hello World", result);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class SvnClientTests(ITestOutputHelper output)
 
         for (int i = 0; i < 2; i++)
         {
-            var listResult = client.List(path: null, "*.bat");
+            var listResult = client.List(path: null, "*.txt");
             var content = client.GetFileString(listResult[0].RelativePath.Value);
             output.WriteLine(content);
 
@@ -60,10 +60,9 @@ public sealed class SvnClientTests(ITestOutputHelper output)
     {
         using var client = await SvnClient.ConnectAsync(Env.RepoUrl, Env.Credentials);
 
-        var files = client.List(path: null, "*.pdf");
+        var files = client.List(path: null, "*.bin");
         var data = client.GetFile(files[0].RelativePath.Value);
 
-        using var stream = File.Create("test.pdf");
-        stream.Write(data.Span);
+        Assert.Equal(SvnContainer.TestBinContent, data);
     }
 }
